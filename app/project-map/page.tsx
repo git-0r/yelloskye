@@ -84,7 +84,9 @@ function ProjectMapPage() {
     return () => {
       map.dispose();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   return (
     <main>
       <div id="map" className="map w-full h-[600px]" tabIndex={0}></div>

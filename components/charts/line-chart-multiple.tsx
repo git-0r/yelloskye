@@ -5,10 +5,9 @@ import {
   max,
   line as d3_line,
   curveMonotoneX,
-  area as d3_area,
 } from "d3";
 
-let sales = [
+const sales = [
   { date: "2023-04-30", value: 4 },
   { date: "2023-05-01", value: 6 },
   { date: "2023-05-02", value: 8 },
@@ -20,7 +19,7 @@ let sales = [
   { date: "2023-05-08", value: 7 },
   { date: "2023-05-09", value: 9 },
 ];
-let sales2 = [
+const sales2 = [
   { date: "2023-04-30", value: 3 },
   { date: "2023-05-01", value: 3.5 },
   { date: "2023-05-02", value: 4 },
@@ -32,24 +31,24 @@ let sales2 = [
   { date: "2023-05-08", value: 4 },
   { date: "2023-05-09", value: 5 },
 ];
-let data = sales.map((d) => ({ ...d, date: new Date(d.date) }));
-let data2 = sales2.map((d) => ({ ...d, date: new Date(d.date) }));
+const data = sales.map((d) => ({ ...d, date: new Date(d.date) }));
+const data2 = sales2.map((d) => ({ ...d, date: new Date(d.date) }));
 
 export function LineChartMultiple() {
-  let xScale = scaleTime()
+  const xScale = scaleTime()
     .domain([data[0].date, data[data.length - 1].date])
     .range([0, 100]);
-  let yScale = scaleLinear()
+  const yScale = scaleLinear()
     .domain([0, max(data.map((d) => d.value)) ?? 0])
     .range([100, 0]);
 
-  let line = d3_line<(typeof data)[number]>()
+  const line = d3_line<(typeof data)[number]>()
     .x((d) => xScale(d.date))
     .y((d) => yScale(d.value))
     .curve(curveMonotoneX);
 
-  let d = line(data);
-  let d2 = line(data2);
+  const d = line(data);
+  const d2 = line(data2);
 
   if (!d || !d2) {
     return null;

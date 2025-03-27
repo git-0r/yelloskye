@@ -1,30 +1,30 @@
 import { Loader2 } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
-import { PropsWithChildren, useEffect } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-// This defines the props that will be passed to the wrapped component.
-type WithAuthProps = object;
-
-export default function withAuth<T extends WithAuthProps>(
-  Component: React.FC<T>
+// Modify the HOC to handle components with any props
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export default function withAuth<P extends object = {}>(
+  Component: React.ComponentType<P>
 ) {
-  return function WithAuth(props: PropsWithChildren<T>) {
+  return function WithAuth(props: P) {
     const { user, isLoading } = useAuth();
     const router = useRouter();
 
     useEffect(() => {
       if (!user && !isLoading) {
-        router.push("/signin"); // Redirect to sign-in page if not authenticated
+        router.push("/signin");
       }
-      /* eslint-disable react-hooks/exhaustive-deps */
-    }, [user, isLoading]);
+    }, [user, isLoading, router]);
 
     if (isLoading || (!user && !isLoading)) {
       return (
         <div className="w-screen h-screen flex items-center justify-center">
-          <Loader2 className="size-8 animate-spin" />
-          <p className="text-2xl">Loading...</p>
+          <div className="flex flex-col items-center">
+            <Loader2 className="size-8 animate-spin" />
+            <p className="text-2xl mt-2">Loading...</p>
+          </div>
         </div>
       );
     }

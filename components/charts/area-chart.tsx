@@ -53,31 +53,31 @@ const sales = [
   { date: "2023-06-10", value: 13 },
   { date: "2023-06-11", value: 12.5 },
 ];
-let data = sales.map((d) => ({ ...d, date: new Date(d.date) }));
+const data = sales.map((d) => ({ ...d, date: new Date(d.date) }));
 
 export function AreaChart() {
-  let xScale = scaleTime()
+  const xScale = scaleTime()
     .domain([data[0].date, data[data.length - 1].date])
     .range([0, 100]);
 
-  let yScale = scaleLinear()
+  const yScale = scaleLinear()
     .domain([0, max(data.map((d) => d.value)) ?? 0])
     .range([100, 0]);
 
-  let line = d3line<(typeof data)[number]>()
+  const line = d3line<(typeof data)[number]>()
     .x((d) => xScale(d.date))
     .y((d) => yScale(d.value))
     .curve(curveMonotoneX);
 
-  let area = d3area<(typeof data)[number]>()
+  const area = d3area<(typeof data)[number]>()
     .x((d) => xScale(d.date))
     .y0(yScale(0))
     .y1((d) => yScale(d.value))
     .curve(curveMonotoneX);
 
-  let areaPath = area(data) ?? undefined;
+  const areaPath = area(data) ?? undefined;
 
-  let d = line(data);
+  const d = line(data);
 
   if (!d) {
     return null;
