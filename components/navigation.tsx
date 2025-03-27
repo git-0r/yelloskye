@@ -3,11 +3,14 @@ import { Button } from "./ui/button";
 import { signOut } from "@/lib/firebase/auth";
 import Link from "next/link";
 import { Bird } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 export default function Navigation() {
   const { user } = useAuth();
+  const path = usePathname();
 
-  if (!user) return null;
+  if (!user || path === "/signin" || path === "/signup") return null;
+
   return (
     <nav className="border-b py-4 mb-8 flex items-center">
       <Link
