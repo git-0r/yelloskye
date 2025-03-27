@@ -12,7 +12,7 @@ export default function Navigation() {
   if (!user || path === "/signin" || path === "/signup") return null;
 
   return (
-    <nav className="border-b py-4 mb-8 flex items-center">
+    <nav className="border-b py-4 px-8 mb-8 flex items-center">
       <Link
         href="/"
         className="font-bold text-lg font-[cursive] flex flex-row gap-1 text-primary"

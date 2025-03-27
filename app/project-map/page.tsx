@@ -88,7 +88,7 @@ function ProjectMapPage() {
   }, []);
 
   return (
-    <main>
+    <main className="px-8">
       <div id="map" className="map w-full h-[600px]" tabIndex={0}></div>
       <div id="popup"></div>
     </main>

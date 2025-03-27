@@ -65,7 +65,7 @@ function ProjectPage({ params }: { params: { id: string } }) {
   };
 
   return (
-    <main className="space-y-4">
+    <main className="space-y-4 px-8">
       <Link href="/" className="flex items-center gap-4">
         <ArrowLeft className="stroke-1" /> <p>All projects</p>
       </Link>

@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${satoshi.variable} antialiased mx-8 font-satoshi`}>
+      <body className={`${satoshi.variable} antialiased font-satoshi`}>
         <AuthProvider>
           <Navigation />
           {children}

@@ -8,7 +8,7 @@ import withAuth from "@/components/with-auth";
 
 function AnalyticsPage() {
   return (
-    <main className="space-y-8 pb-8">
+    <main className="space-y-8 pb-8 px-8">
       <div>
         <p className="text-lg font-bold">Vertical Multi Bars</p>
         <p>This is a vertical bar chart with multiple sub-bars</p>
