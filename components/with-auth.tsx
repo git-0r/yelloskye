@@ -1,10 +1,15 @@
 import { Loader2 } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
-import { useEffect } from "react";
+import { PropsWithChildren, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-export default function withAuth(Component: React.FC) {
-  return function WithAuth() {
+// This defines the props that will be passed to the wrapped component.
+type WithAuthProps = object;
+
+export default function withAuth<T extends WithAuthProps>(
+  Component: React.FC<T>
+) {
+  return function WithAuth(props: PropsWithChildren<T>) {
     const { user, isLoading } = useAuth();
     const router = useRouter();
 
@@ -15,10 +20,15 @@ export default function withAuth(Component: React.FC) {
       /* eslint-disable react-hooks/exhaustive-deps */
     }, [user, isLoading]);
 
-    if (isLoading) {
-      return <Loader2 className="size-4 animate-spin" />; // Or show a loading spinner
+    if (isLoading || (!user && !isLoading)) {
+      return (
+        <div className="w-screen h-screen flex items-center justify-center">
+          <Loader2 className="size-8 animate-spin" />
+          <p className="text-2xl">Loading...</p>
+        </div>
+      );
     }
 
-    return <Component />;
+    return <Component {...props} />;
   };
 }
