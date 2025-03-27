@@ -1,5 +1,5 @@
 import { SignUpForm } from "@/components/signup-form";
-import { GalleryVerticalEnd } from "lucide-react";
+import { Bird } from "lucide-react";
 import Image from "next/image";
 
 export default function SingUpPage() {
@@ -9,7 +9,7 @@ export default function SingUpPage() {
         <div className="flex justify-center gap-2 md:justify-start">
           <a href="#" className="flex items-center gap-2 font-medium">
             <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
-              <GalleryVerticalEnd className="size-4" />
+              <Bird className="size-4" />
             </div>
             Yello Skye
           </a>
