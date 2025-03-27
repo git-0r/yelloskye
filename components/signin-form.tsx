@@ -19,7 +19,7 @@ export function SignInForm({
   const { user } = useAuth();
   const router = useRouter();
   const [email, setEmail] = useState("fnhegy@hi2.in");
-  const [password, setPassword] = useState("UKAwfNL92XDmz62");
+  const [password, setPassword] = useState("X!3nQ7N6SKiGQvr");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSignIn = async (e: FormEvent) => {
