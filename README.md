@@ -96,7 +96,25 @@ This project is a Next.js-based web application designed to provide users with p
 
 ## Screenshots & Demo:
 
-- [Insert screenshots or a short demo video showing key features of the app here.]
+<div align="center">
+  <img src="https://ynk2whlk8hmk9qgf.public.blob.vercel-storage.com/yelloskye/Screenshot%202025-03-27%20at%209.21.57%E2%80%AFPM-fgs9X3W2YOfrseUQCdXXKSmIIVndEs.png" alt="Description of Image">
+  <p><em>Login page</em></p>
+</div>
+
+<div align="center">
+  <img src="https://ynk2whlk8hmk9qgf.public.blob.vercel-storage.com/yelloskye/Screenshot%202025-03-27%20at%209.22.18%E2%80%AFPM-CxOUplAREfmefgHtvMqtZbjVvAT2ER.png">
+  <p><em>Projects page</em></p>
+</div>
+
+<div align="center">
+  <img src="https://ynk2whlk8hmk9qgf.public.blob.vercel-storage.com/yelloskye/Screenshot%202025-03-27%20at%209.22.35%E2%80%AFPM-SRrjVlH5EDQcAmqNGfVXWvaviBwOXJ.png">
+  <p><em>Map page</em></p>
+</div>
+
+<div align="center">
+  <img src="https://ynk2whlk8hmk9qgf.public.blob.vercel-storage.com/yelloskye/Screenshot%202025-03-27%20at%209.22.45%E2%80%AFPM-bqL8IwVdfbAf8u23aixAHlbnYvLrF5.png">
+  <p><em>Analytics page</em></p>
+</div>
 
 ---
 
