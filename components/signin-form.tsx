@@ -18,8 +18,8 @@ export function SignInForm({
 }: React.ComponentProps<"div">) {
   const { user } = useAuth();
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("fnhegy@hi2.in");
+  const [password, setPassword] = useState("UKAwfNL92XDmz62");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSignIn = async (e: FormEvent) => {
@@ -130,6 +130,9 @@ export function SignInForm({
       <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary">
         By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
         and <a href="#">Privacy Policy</a>.
+        <p className="mt-1">
+          Use the default input values to login and test the application.
+        </p>
       </div>
     </div>
   );
