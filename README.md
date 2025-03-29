@@ -52,6 +52,8 @@ This project is a Next.js-based web application designed to provide users with p
 
 - **Frontend**: Next.js (React)
 - **Authentication**: Firebase Authentication
+- **Database**: Firestore
+- **Storage**: Firebase Storage
 - **Map**: Open Layers
 - **Charts**: d3
 - **Styling**: Tailwind
