@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import withAuth from "@/components/with-auth";
 import Link from "next/link";
 import { IProject } from "@/app/types";
@@ -11,6 +11,7 @@ import ImageTab from "@/components/project-page/image-tab";
 import VideoTab from "@/components/project-page/video-tab";
 import { updateProjectMedia } from "@/lib/firebase/storage";
 import { toast } from "sonner";
+import Loader from "@/components/loader";
 
 function ProjectPage({ params }: { params: { id: string } }) {
   const [project, setProject] = useState<IProject | null>(null);
@@ -78,13 +79,7 @@ function ProjectPage({ params }: { params: { id: string } }) {
     }
   };
 
-  if (isLoading)
-    return (
-      <div className="w-full flex items-center justify-center gap-4">
-        <Loader2 className="animate-spin" />
-        Loading...
-      </div>
-    );
+  if (isLoading) return <Loader />;
 
   if (!isLoading && !project) return null;
 

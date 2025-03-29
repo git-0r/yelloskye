@@ -10,26 +10,30 @@ function AnalyticsPage() {
   return (
     <main className="space-y-8 pb-8 px-8">
       <div>
-        <p className="text-lg font-bold">Vertical Multi Bars</p>
+        <p className="text-lg font-semibold md:font-bold">
+          Vertical Multi Bars
+        </p>
         <p>This is a vertical bar chart with multiple sub-bars</p>
       </div>
       <BarChartMultiVertical />
       <div>
-        <p className="text-lg font-bold">Multiple Line Chart</p>
+        <p className="text-lg font-semibold md:font-bold">
+          Multiple Line Chart
+        </p>
         <p>This is a multi-line chart with curved lines</p>
       </div>
       <LineChartMultiple />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>
           <div>
-            <p className="text-lg font-bold">Pie Chart</p>
+            <p className="text-lg font-semibold md:font-bold">Pie Chart</p>
             <p>This is a simple pie chart 🍰</p>
           </div>
           <PieChartLabels />
         </div>
         <div>
           <div>
-            <p className="text-lg font-bold">Area Chart</p>
+            <p className="text-lg font-semibold md:font-bold">Area Chart</p>
             <p>This is a simple area chart</p>
           </div>
           <AreaChart />

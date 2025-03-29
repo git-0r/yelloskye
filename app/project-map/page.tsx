@@ -8,19 +8,38 @@ import TileLayer from "ol/layer/Tile.js";
 import OSM from "ol/source/OSM.js";
 import Icon from "ol/style/Icon.js";
 import Style from "ol/style/Style.js";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Feature from "ol/Feature.js";
 import Point from "ol/geom/Point.js";
 import VectorLayer from "ol/layer/Vector.js";
 import VectorSource from "ol/source/Vector.js";
 import { fromLonLat } from "ol/proj";
-import projectsData from "@/lib/data/projects.json";
 import { useRouter } from "next/navigation";
+import { IProject } from "../types";
+import { toast } from "sonner";
+import { getProjects } from "@/lib/firebase/firestore";
+import Loader from "@/components/loader";
 
 function ProjectMapPage() {
   const router = useRouter();
+  const [projects, setProjects] = useState<IProject[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    setIsLoading(true);
+    getProjects()
+      .then((data) => setProjects(data))
+      .catch((err) => {
+        console.log(err);
+        toast.error("Failed to fetch projects.");
+      })
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  // render map
+  useEffect(() => {
+    if (!projects || projects.length === 0) return;
+
     const iconStyle = new Style({
       image: new Icon({
         anchor: [0.5, 46],
@@ -30,7 +49,7 @@ function ProjectMapPage() {
       }),
     });
 
-    const features = projectsData.map(
+    const features = projects.map(
       (project) =>
         new Feature({
           geometry: new Point(fromLonLat(project.coordinates)),
@@ -82,10 +101,12 @@ function ProjectMapPage() {
     });
 
     return () => {
-      map.dispose();
+      map?.dispose();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [projects]);
+
+  if (isLoading) return <Loader />;
 
   return (
     <main className="px-8">

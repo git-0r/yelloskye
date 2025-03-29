@@ -17,12 +17,14 @@ import Link from "next/link";
 import { getProjects } from "@/lib/firebase/firestore";
 import { toast } from "sonner";
 import { IProject } from "./types";
+import Loader from "@/components/loader";
 
 function Home() {
   const [allProjects, setAllProjects] = useState<IProject[]>([]);
   const [projects, setProjects] = useState<IProject[]>([]);
   // this can be optimized by debouncing
   const [query, setQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const queryHandler = (value: string) => {
     setQuery(value.toLowerCase());
@@ -37,13 +39,17 @@ function Home() {
   }, [query, allProjects]);
 
   useEffect(() => {
+    setIsLoading(true);
     getProjects()
       .then((data) => setAllProjects(data))
       .catch((err) => {
         console.log(err);
         toast.error("Failed to fetch projects.");
-      });
+      })
+      .finally(() => setIsLoading(false));
   }, []);
+
+  if (isLoading) return <Loader />;
 
   return (
     <main className="space-y-8 px-8">
