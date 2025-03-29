@@ -7,4 +7,16 @@ export interface IProject {
   imageCount: number;
   videoCount: number;
   panoCount: number;
+  coordinates: number[];
+  media?: IMedia[];
+}
+
+export interface IMedia {
+  metaData: {
+    contentType?: string;
+    name: string;
+    size: number;
+  };
+  donwloadURL: string;
+  isUploading?: boolean;
 }

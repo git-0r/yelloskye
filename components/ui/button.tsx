@@ -55,10 +55,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {loader ? (
-          <>
+          <div className="flex items-center gap-2">
             <Loader2 className="animate-spin" />
             Please wait
-          </>
+          </div>
         ) : (
           children
         )}

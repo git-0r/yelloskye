@@ -1,68 +1,92 @@
 "use client";
 
-import { useDropzone } from "react-dropzone";
 import { useState, useEffect } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import Image from "next/image";
-import { ArrowLeft, X } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import withAuth from "@/components/with-auth";
 import Link from "next/link";
-import { getProjectById } from "@/lib/utils";
 import { IProject } from "@/app/types";
+import { getProjectById } from "@/lib/firebase/firestore";
+import ImageTab from "@/components/project-page/image-tab";
+import VideoTab from "@/components/project-page/video-tab";
+import { updateProjectMedia } from "@/lib/firebase/storage";
+import { toast } from "sonner";
 
 function ProjectPage({ params }: { params: { id: string } }) {
-  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-  const [videoPreviews, setVideoPreviews] = useState<string[]>([]);
-  const [project] = useState<IProject | null>(getProjectById(params.id));
+  const [project, setProject] = useState<IProject | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Cleanup previews when component is unmounted
   useEffect(() => {
-    return () => {
-      // Clean up URLs to avoid memory leaks
-      imagePreviews.forEach((preview) => URL.revokeObjectURL(preview));
-      videoPreviews.forEach((preview) => URL.revokeObjectURL(preview));
-    };
+    setIsLoading(true);
+    getProjectById(params.id)
+      .then((project) => {
+        setProject(project);
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Failed to fetch project details.");
+      })
+      .finally(() => setIsLoading(false));
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Handle image file drop
-  const { getRootProps: getImageRootProps, getInputProps: getImageInputProps } =
-    useDropzone({
-      accept: { "image/*": [] },
-      multiple: true,
-      onDrop: (acceptedFiles) => {
-        const imageUrls = acceptedFiles.map((file) =>
-          URL.createObjectURL(file)
-        );
-        setImagePreviews((prev) => [...prev, ...imageUrls]);
-      },
-    });
-
-  // Handle video file drop
-  const { getRootProps: getVideoRootProps, getInputProps: getVideoInputProps } =
-    useDropzone({
-      accept: { "video/*": [] },
-      multiple: true,
-      onDrop: (acceptedFiles) => {
-        const videoUrls = acceptedFiles.map((file) =>
-          URL.createObjectURL(file)
-        );
-        setVideoPreviews((prev) => [...prev, ...videoUrls]);
-      },
-    });
-
-  // Remove individual image preview
-  const removeImagePreview = (previewUrl: string) => {
-    setImagePreviews((prev) => prev.filter((url) => url !== previewUrl));
-    URL.revokeObjectURL(previewUrl); // Revoke object URL to free memory
+  const uploadFile = async (file: File) => {
+    try {
+      // add placeholder when uploading
+      setProject((prev) =>
+        !prev
+          ? prev
+          : {
+              ...prev,
+              media: [
+                ...(prev.media ?? []),
+                {
+                  donwloadURL: "/images/placeholder.png",
+                  metaData: {
+                    size: 0,
+                    contentType: file.type,
+                    name: encodeURIComponent(file.name) + "placeholder",
+                  },
+                  isUploading: true,
+                },
+              ],
+            }
+      );
+      const result = await updateProjectMedia(project?.id, file);
+      setProject((prev) =>
+        !prev ? prev : { ...prev, media: [...(prev.media ?? []), result] }
+      );
+      toast.success("File uploaded successfully.");
+    } catch (error) {
+      toast.error("File upload failed.");
+      console.log("File upload failed. " + error);
+    } finally {
+      // remove placeholder after uploading
+      setProject((prev) =>
+        !prev
+          ? prev
+          : {
+              ...prev,
+              media: prev.media?.filter(
+                (item) =>
+                  item.metaData.name !==
+                  encodeURIComponent(file.name) + "placeholder"
+              ),
+            }
+      );
+    }
   };
 
-  // Remove individual video preview
-  const removeVideoPreview = (previewUrl: string) => {
-    setVideoPreviews((prev) => prev.filter((url) => url !== previewUrl));
-    URL.revokeObjectURL(previewUrl); // Revoke object URL to free memory
-  };
+  if (isLoading)
+    return (
+      <div className="w-full flex items-center justify-center gap-4">
+        <Loader2 className="animate-spin" />
+        Loading...
+      </div>
+    );
+
+  if (!isLoading && !project) return null;
 
   return (
     <main className="space-y-4 px-8">
@@ -75,70 +99,16 @@ function ProjectPage({ params }: { params: { id: string } }) {
           <TabsTrigger value="images">Images</TabsTrigger>
           <TabsTrigger value="videos">Videos</TabsTrigger>
         </TabsList>
-
-        <TabsContent value="images">
-          <div
-            {...getImageRootProps()}
-            className="border-dashed border-2 p-6 text-center"
-          >
-            <input {...getImageInputProps()} />
-            <p>Drag & Drop images or click to select</p>
-          </div>
-          <div className="mt-4 flex flex-wrap justify-start">
-            {imagePreviews.map((preview, index) => (
-              <div key={index} className="relative m-2">
-                <div className="w-[300px] border rounded-md">
-                  <AspectRatio ratio={16 / 9}>
-                    <Image
-                      src={preview}
-                      alt={`Image preview ${index}`}
-                      fill
-                      className="rounded-md object-cover"
-                    />
-                  </AspectRatio>
-                </div>
-
-                <button
-                  onClick={() => removeImagePreview(preview)}
-                  className="absolute top-1 right-1 bg-white text-white rounded-full p-1 border"
-                >
-                  <X stroke="#000" />
-                </button>
-              </div>
-            ))}
-          </div>
-        </TabsContent>
-
-        <TabsContent value="videos">
-          <div
-            {...getVideoRootProps()}
-            className="border-dashed border-2 p-6 text-center"
-          >
-            <input {...getVideoInputProps()} />
-            <p>Drag & Drop videos or click to select</p>
-          </div>
-          <div className="mt-4 flex flex-wrap justify-start">
-            {videoPreviews.map((preview, index) => (
-              <div key={index} className="relative m-2">
-                <div className="w-[300px] border rounded-md">
-                  <AspectRatio ratio={16 / 9}>
-                    <video controls className="w-full h-full">
-                      <source src={preview} type="video/mp4" />
-                      Your browser does not support the video tag.
-                    </video>
-                  </AspectRatio>
-                </div>
-
-                <button
-                  onClick={() => removeVideoPreview(preview)}
-                  className="absolute top-1 right-1 bg-white text-white rounded-full p-1 border"
-                >
-                  <X stroke="#000" />
-                </button>
-              </div>
-            ))}
-          </div>
-        </TabsContent>
+        <ImageTab
+          project={project}
+          uploadFile={uploadFile}
+          setProject={setProject}
+        />
+        <VideoTab
+          project={project}
+          uploadFile={uploadFile}
+          setProject={setProject}
+        />
       </Tabs>
     </main>
   );

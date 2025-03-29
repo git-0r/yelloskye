@@ -10,14 +10,17 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { LocateFixedIcon } from "lucide-react";
-import projectsData from "@/lib/data/projects.json";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Search from "@/components/search";
 import Link from "next/link";
+import { getProjects } from "@/lib/firebase/firestore";
+import { toast } from "sonner";
+import { IProject } from "./types";
 
 function Home() {
-  const [projects, setProjects] = useState(projectsData);
+  const [allProjects, setAllProjects] = useState<IProject[]>([]);
+  const [projects, setProjects] = useState<IProject[]>([]);
   // this can be optimized by debouncing
   const [query, setQuery] = useState("");
 
@@ -26,16 +29,30 @@ function Home() {
   };
 
   useEffect(() => {
-    const filteredProjects = projectsData.filter((project) =>
+    const filteredProjects = allProjects.filter((project) =>
       project.title.toLowerCase().includes(query)
     );
+
     setProjects(filteredProjects);
-  }, [query]);
+  }, [query, allProjects]);
+
+  useEffect(() => {
+    getProjects()
+      .then((data) => setAllProjects(data))
+      .catch((err) => {
+        console.log(err);
+        toast.error("Failed to fetch projects.");
+      });
+  }, []);
 
   return (
     <main className="space-y-8 px-8">
-      <Search query={query} queryHandler={queryHandler} />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-4">
+      <Search
+        query={query}
+        queryHandler={queryHandler}
+        setAllProjects={setAllProjects}
+      />
+      <div className="grid grid-flow-row grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-4">
         {projects.map((project) => (
           <Project key={project.id} data={project} />
         ))}
@@ -49,7 +66,7 @@ function Home() {
   );
 }
 
-function Project({ data }: { data: (typeof projectsData)[0] }) {
+function Project({ data }: { data: IProject }) {
   return (
     <Link href={"/project/" + data.id}>
       <Card>
@@ -68,6 +85,7 @@ function Project({ data }: { data: (typeof projectsData)[0] }) {
             height={50}
             alt="drone shot of city"
             className="size-14 rounded"
+            loading="lazy"
           />
         </CardHeader>
         <CardContent>
